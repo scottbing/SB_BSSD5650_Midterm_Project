@@ -43,14 +43,18 @@ public class RedeemRewardsActivity extends AppCompatActivity {
     private int miles = 0;
     int remainingMiles = 0;
     private String name = "None";
+    private String airline = "None";
     private String status = "No Rewards";
     private enum Reward_Status {BRONZE, SILVER, GOLD, NO};
+
+    private RewardsDbAdapter mDbAdapter;
+    private Customer customer;
 
     public TextView txtRemainingMiles, txtMsg;
     public EditText etFlightLength;
     public Button btnUpgradeSeat, btnRedeemMileage;
 
-    private SharedPreferences sharedPrefs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +68,27 @@ public class RedeemRewardsActivity extends AppCompatActivity {
         btnRedeemMileage = (Button) findViewById(R.id.btnRedeemMileage);
         etFlightLength = (EditText) findViewById(R.id.etFlightLength);
 
-
-        sharedPrefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-
         // Handle Upgrade Seat Button
         btnUpgradeSeat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // open the database
+                mDbAdapter = new RewardsDbAdapter(RedeemRewardsActivity.this);
+                mDbAdapter = RewardsDbAdapter.getInstance();
+                mDbAdapter.open();
+
+                // get current customer form the database
+                Intent intent = getIntent();
+                String user_name = intent.getStringExtra("USER_NAME");
+                customer = mDbAdapter.fetchCustomerByName(user_name);
+
+                // get the data
+                name = customer.getName();
+                miles = customer.getMiles();
+                airline = customer.getAirline();
+
+                status = customer.getStatus();
 
                 // clear the message
                 txtMsg.setText("");
@@ -82,8 +100,7 @@ public class RedeemRewardsActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // get current values
-                        status = sharedPrefs.getString(STATUS, "");
+
 
                         // debug
                         // Toast.makeText(getApplicationContext(), "Status in RedeemRewards: " + status, Toast.LENGTH_SHORT).show();
@@ -110,20 +127,20 @@ public class RedeemRewardsActivity extends AppCompatActivity {
                         switch (Reward_Status.valueOf(status.substring(0, idx).toUpperCase())) {
 
                             case BRONZE:   // Bronze Status
-                                miles = sharedPrefs.getInt(MILES, 0) - BRONZE_UPGRADE_DEDUCTION;
+                                miles = customer.getMiles() - BRONZE_FLIGHT_DEDUCTION;
                                 break;
 
                             case SILVER:   // Silver Status
-                                miles = sharedPrefs.getInt(MILES, 0) - SILVER_UPGRADE_DEDUCTION;
+                                miles = customer.getMiles()  - SILVER_UPGRADE_DEDUCTION;
                                 break;
 
                             case GOLD:   // Gold Status
-                                miles = sharedPrefs.getInt(MILES, 0) - GOLD_UPGRADE_DEDUCTION;
+                                miles = customer.getMiles()  - GOLD_UPGRADE_DEDUCTION;
                                 break;
 
                             case NO:   // no rewards
                                 txtMsg.setText("Seat upgrade not allowed - no status yet attained.");
-                                miles = sharedPrefs.getInt(MILES,0);
+                                miles = customer.getMiles();
 
                         }
 
@@ -153,6 +170,22 @@ public class RedeemRewardsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                // open the database
+                mDbAdapter = new RewardsDbAdapter(RedeemRewardsActivity.this);
+                mDbAdapter = RewardsDbAdapter.getInstance();
+                mDbAdapter.open();
+
+                // get current customer form the database
+                Intent intent = getIntent();
+                String user_name = intent.getStringExtra("USER_NAME");
+                customer = mDbAdapter.fetchCustomerByName(user_name);
+
+                // get the data
+                name = customer.getName();
+                miles = customer.getMiles();
+                airline = customer.getAirline();
+                status = customer.getStatus();
+
                 // clear the message
                 txtMsg.setText("");
 
@@ -163,9 +196,6 @@ public class RedeemRewardsActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        // get current status
-                        status = sharedPrefs.getString(STATUS, "");
 
                         // get selected miles
 
@@ -303,21 +333,21 @@ public class RedeemRewardsActivity extends AppCompatActivity {
 
             case BRONZE:   // Bronze Status
                 if (miles > 0 && miles < 1000)
-                    miles = sharedPrefs.getInt(MILES, 0) - BRONZE_FLIGHT_DEDUCTION;
+                    miles = customer.getMiles() - BRONZE_FLIGHT_DEDUCTION;
                 else
                     miles  = 0;
                 break;
 
             case SILVER:    // Silver Status
                 if (miles >= 1000 && miles < 2000)
-                    miles = sharedPrefs.getInt(MILES, 0) - SILVER_FLIGHT_DEDUCTION;
+                    miles = customer.getMiles() - SILVER_FLIGHT_DEDUCTION;
                 else
                     miles  = 0;
                 break;
 
             case GOLD:   // Gold Status
                 if (miles >= 2000 && miles < 3000)
-                    miles = sharedPrefs.getInt(MILES, 0) - GOLD_FLIGHT_DEDUCTION;
+                    miles = customer.getMiles() - GOLD_FLIGHT_DEDUCTION;
                 else
                     miles  = 0;
                 break;
@@ -333,18 +363,17 @@ public class RedeemRewardsActivity extends AppCompatActivity {
 
     public void processRemainingMiles(int miles) {
 
+        // update the updated miles in the database
+        customer.setMiles(miles);
+        mDbAdapter.updateCustomerByName(customer);
+
         // display and update remaining miles
         if (miles > 0) {
             txtRemainingMiles.setText(Integer.toString(miles));
-            SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putInt(MILES, miles);
-            editor.commit();
         } else if (miles == 0) {
-            miles = sharedPrefs.getInt(MILES, 0);
             txtRemainingMiles.setText(Integer.toString(miles));
             txtMsg.setText("Miles entered out of range for Status.");
         } else if (miles < 0) {
-            miles = sharedPrefs.getInt(MILES, 0);
             txtRemainingMiles.setText(Integer.toString(miles));
             txtMsg.setText("Upgrade Unsuccessful - not enough miles in the bank.");
         }

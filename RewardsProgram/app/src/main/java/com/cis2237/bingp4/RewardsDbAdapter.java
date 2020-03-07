@@ -21,7 +21,7 @@ public class RewardsDbAdapter {
     public static final String COL_STATUS = "status";
     public static final String COL_MILES = "miles";
 
-    // Indicies
+    // Column Indexes
     public static final int INDEX_ID = 0;
     public static final int INDEX_NAME = INDEX_ID + 1;
     public static final int INDEX_AIRLINE = INDEX_ID + 2;
@@ -155,6 +155,18 @@ public class RewardsDbAdapter {
         return mCursor;
     }
 
+    //  Edit a customer by name
+    public void updateCustomerByName(Customer customer) {
+        ContentValues values = new ContentValues();
+        values.put(COL_NAME, customer.getName());
+        values.put(COL_AIRLINE, customer.getAirline());
+        values.put(COL_STATUS, customer.getStatus());
+        values.put(COL_MILES, customer.getMiles());
+        int result = mDb.update(TABLE_NAME, values,
+                COL_NAME + "=?", new String[]{String.valueOf(customer.getName())});
+        int i =0;
+    }
+
     //  Edit a customer
     public void updateCustomer(Customer customer) {
         ContentValues values = new ContentValues();
@@ -162,8 +174,9 @@ public class RewardsDbAdapter {
         values.put(COL_AIRLINE, customer.getAirline());
         values.put(COL_STATUS, customer.getStatus());
         values.put(COL_MILES, customer.getMiles());
-        mDb.update(TABLE_NAME, values,
+        int result = mDb.update(TABLE_NAME, values,
                 COL_ID + "=?", new String[]{String.valueOf(customer.getId())});
+        int i =0;
     }
     // Remove a reward
     public void deleteCustomerById(int nId) {

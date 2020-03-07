@@ -83,7 +83,10 @@ public class StatusActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-            startActivity(new Intent(StatusActivity.this, RedeemRewardsActivity.class));
+                // display results in RedeemRewardsActivity
+                Intent intent = new Intent(StatusActivity.this, RedeemRewardsActivity.class);
+                intent.putExtra("USER_NAME", name);
+                startActivity(intent);
 
             }
         });
@@ -194,17 +197,18 @@ public class StatusActivity extends AppCompatActivity {
             imgReward.setImageResource(R.drawable.rewards);
         }
 
-        // debug
+        // update the updated miles in the database
+        customer.setStatus(status);
+        mDbAdapter.updateCustomerByName(customer);
+        /*customer.setMiles(10);
+        mDbAdapter.updateCustomerByName(customer);*/
+
+        int i= 0;        // debug
         // Toast.makeText(getApplicationContext(), "Status in Status Activity: " + sharedPrefs.getString(STATUS, ""), Toast.LENGTH_LONG).show();
 
     }
 
     private void displayPreferences() {
- /*       Intent intent = getIntent();
-        String user_name = intent.getStringExtra("USER_NAME");
-        Customer customer = mDbAdapter.fetchCustomerByName(user_name);*/
-        //Customer customer = mDbAdapter.fetchCustomerByName("Jill");
-
         txtName.setText(name);
         txtMilesAccumulated.setText(Integer.toString(miles));
         txtAirline.setText(airline);
