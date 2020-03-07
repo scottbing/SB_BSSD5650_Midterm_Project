@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Android Rewards Program</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_main">Main</string>
+    <string name="action_return">Go Back</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_status">StatusActivity</string>
+    <string name="showRules">Show Rules</string>
+    <string name="title_activity_main_activity2">MainActivity2</string>
+    <string name="title_activity_redeem_rewards">RedeemRewardsActivity</string>
+    <string name="title_activity_rules">RulesActivity</string>
+    <string name="log_onPause">in onPause() method&#8230;</string>
+    <string name="log_onResume">in onResume() method&#8230;</string>
+    <string name="log_onRestart">in onRestart() method&#8230;</string>
+    <string name="log_onStart">in onStart() method&#8230;</string>
+    <string name="log_onDestroy">in onDestroy() method&#8230;</string>
+    <string name="log_onStop">in onStop() method&#8230;</string>
+    <string name="log_onRestoreInstanceState">in onRestoreInstanceState() method&#8230;</string>
+    <string name="log_onSaveInstanceState">in onSaveInstanceState() method&#8230;</string>
+    <string name="log_onCreateOptionsMenu">in onCreateOptionsMenu&#8230;</string>
+    <string name="log_release_resources">Release Resources&#8230;</string>
+    <string name="log_freeFlight">Free Flight&#8230;</string>
+    <string name="frequent_flier_miles_status">Frequent Flier Miles Status</string>
+    <string name="rewards_rules_are_available_in_the_action_bar_menu">Rewards Rules are available in the Action Bar
+        Menu
+    </string>
+    <string name="name">Name:</string>
+    <string name="airline">Airline:</string>
+    <string name="miles">Miles:</string>
+    <string name="status">Status:</string>
+    <string name="press_to_redeem_rewards">Press to Redeem Rewards</string>
+    <string name="remaining_miles">Remaining Miles:</string>
+
+
+</resources>
