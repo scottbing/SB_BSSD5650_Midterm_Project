@@ -171,11 +171,11 @@ public class MainActivity extends AppCompatActivity {
         mDbAdapter = new RewardsDbAdapter(this);
         mDbAdapter = RewardsDbAdapter.getInstance();
         mDbAdapter.open();
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
 
             initializeDatabase();
 
-            }
+            }*/
 
 
         // set up local variables

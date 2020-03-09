@@ -50,7 +50,7 @@ public class RedeemRewardsActivity extends AppCompatActivity {
     private RewardsDbAdapter mDbAdapter;
     private Customer customer;
 
-    public TextView txtRemainingMiles, txtMsg;
+    public TextView txtRemainingMiles, txtUpdatedStatus, txtMsg;
     public EditText etFlightLength;
     public Button btnUpgradeSeat, btnRedeemMileage;
 
@@ -63,6 +63,7 @@ public class RedeemRewardsActivity extends AppCompatActivity {
 
         // instantiate objects
         txtRemainingMiles = (TextView) findViewById(R.id.txtRemainingMiles);
+        txtUpdatedStatus = (TextView) findViewById(R.id.txtUpdatedStatus);
         txtMsg = (TextView) findViewById(R.id.txtMsg);
         btnUpgradeSeat = (Button) findViewById(R.id.btnUpgradeSeat);
         btnRedeemMileage = (Button) findViewById(R.id.btnRedeemMileage);
@@ -355,7 +356,7 @@ public class RedeemRewardsActivity extends AppCompatActivity {
             case NO:   // No Rewards
                 // Toast.makeText(getApplicationContext(), "Miles entered out of range for Status.", Toast.LENGTH_LONG).show();
                 txtMsg.setText("Upgrade Not Allowed - No Status attained.");
-
+                miles  = 0;
         }
 
         processRemainingMiles(miles);
@@ -365,17 +366,21 @@ public class RedeemRewardsActivity extends AppCompatActivity {
 
         // display and update remaining miles
         if (miles > 0) {
+
             // update current status
             reassignStatus();
+            customer.setStatus(status);
+
             // update the updated miles in the database
             customer.setMiles(miles);
             mDbAdapter.updateCustomerByName(customer);
             txtRemainingMiles.setText(Integer.toString(miles));
+            txtUpdatedStatus.setText(status);
         } else if (miles == 0) {
-            txtRemainingMiles.setText(Integer.toString(miles));
+            txtRemainingMiles.setText(Integer.toString(customer.getMiles()));
             txtMsg.setText("Miles entered out of range for Status.");
         } else if (miles < 0) {
-            txtRemainingMiles.setText(Integer.toString(miles));
+            txtRemainingMiles.setText(Integer.toString(customer.getMiles()));
             txtMsg.setText("Upgrade Unsuccessful - not enough miles in the bank.");
         }
     }
