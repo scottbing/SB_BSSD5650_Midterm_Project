@@ -122,7 +122,7 @@ public class RewardsDbAdapter {
 
     }
 
-    //  Fetch a single customerby name
+    //  Fetch a single customer by name
     public Customer fetchCustomerByName(String name) {
 
         Cursor cursor = mDb.query(TABLE_NAME, new String[]{COL_NAME,
@@ -141,6 +141,24 @@ public class RewardsDbAdapter {
 
     }
 
+    //  Does the customer exist?
+    public boolean customerExists(String name) {
+
+        Cursor cursor = mDb.query(TABLE_NAME, new String[]{COL_NAME,
+                        COL_NAME, COL_AIRLINE, COL_STATUS, COL_MILES}, COL_NAME + "=?",
+                new String[]{String.valueOf(name)}, null, null, null, null
+        );
+        if (cursor.getCount() > 0)
+        {
+            return true;
+            /* record exist */
+        }
+        else
+        {
+            return false;
+            /* record not exist */
+        }
+    }
 
 
     // Get all customers

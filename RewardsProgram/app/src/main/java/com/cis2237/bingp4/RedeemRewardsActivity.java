@@ -363,12 +363,13 @@ public class RedeemRewardsActivity extends AppCompatActivity {
 
     public void processRemainingMiles(int miles) {
 
-        // update the updated miles in the database
-        customer.setMiles(miles);
-        mDbAdapter.updateCustomerByName(customer);
-
         // display and update remaining miles
         if (miles > 0) {
+            // update current status
+            reassignStatus();
+            // update the updated miles in the database
+            customer.setMiles(miles);
+            mDbAdapter.updateCustomerByName(customer);
             txtRemainingMiles.setText(Integer.toString(miles));
         } else if (miles == 0) {
             txtRemainingMiles.setText(Integer.toString(miles));
@@ -377,5 +378,28 @@ public class RedeemRewardsActivity extends AppCompatActivity {
             txtRemainingMiles.setText(Integer.toString(miles));
             txtMsg.setText("Upgrade Unsuccessful - not enough miles in the bank.");
         }
+    }
+
+    public void reassignStatus() {
+
+        // determine Rewards
+        if (miles >= 25000 && miles < 50000) {  // Bronze Status
+            status = "Bronze Status";
+        }
+        else if (miles >= 50000 && miles < 75000) {  // Silver Status
+            status = "Silver Status";
+        }
+        else if (miles >= 75000) {  // Gold Status
+            status = "Gold Status";
+        }
+        else {
+            status = "No Rewards";
+        }
+
+        // update the updated miles in the database
+        customer.setStatus(status);
+        mDbAdapter.updateCustomerByName(customer);
+
+
     }
 }

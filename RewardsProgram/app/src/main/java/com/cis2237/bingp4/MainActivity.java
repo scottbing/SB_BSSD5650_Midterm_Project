@@ -29,13 +29,14 @@ public class MainActivity extends AppCompatActivity {
 
     private int miles = 0;
     private String milesFlown;
-    String customer, airlinePlan, currentStatus;
+    String airlinePlan, currentStatus;
     private String name = "None";
 
     private Button btnFindStatus, btnRestart;
     private EditText etName, etAirline, etMilesFlown;
     private TextView txtInfo;
     private RewardsDbAdapter mDbAdapter;
+    private Customer customer;
 
     private SharedPreferences sharedPrefs;
 
@@ -178,18 +179,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         // set up local variables
-        customer = etName.getText().toString();
+        name = etName.getText().toString();
         int num = 0;
         String nameMsg = "", milesMsg ="";
 
         // get name and check that name is not empty
         try {
-            if  (customer.isEmpty()) {
+            if  (name.isEmpty()) {
                 // if entry is made then throw error
                 throw new IllegalArgumentException("Name is Empty - Enter a Name.");
             } else {
-
-                //Customer customer = mDbAdapter.fetchCustomerByName(temp);
 
                 // name is okay, get miles flown and check that it is valid
                 getAirline();
@@ -243,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
             // display results in StatusActivity
             Intent intent = new Intent(this, StatusActivity.class);
 
-            intent.putExtra("USER_NAME", customer);
+            intent.putExtra("USER_NAME", name);
             //startActivity(new Intent(MainActivity.this, StatusActivity.class));
             startActivity(intent);
 
@@ -254,7 +253,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createCustomer() {
-        mDbAdapter.createCustomer(customer, airlinePlan, "No Rewards", miles);
+        boolean bool = mDbAdapter.customerExists(name);
+        if (bool == true) {
+            customer = mDbAdapter.fetchCustomerByName(name);
+            customer.setMiles(customer.getMiles() + miles);    // tally the miles
+            mDbAdapter.updateCustomerByName(customer);
+        }
+         mDbAdapter.createCustomer(name, airlinePlan, "No Rewards", miles);
     }
 
     private void initializeDatabase() {
