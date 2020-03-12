@@ -254,12 +254,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void createCustomer() {
         boolean bool = mDbAdapter.customerExists(name);
+        /*if (bool == false){
+            mDbAdapter.createCustomer(name, airlinePlan, "No Rewards", miles);
+        }*/
         if (bool == true) {
             customer = mDbAdapter.fetchCustomerByName(name);
             customer.setMiles(customer.getMiles() + miles);    // tally the miles
             mDbAdapter.updateCustomerByName(customer);
+        } else {
+            mDbAdapter.createCustomer(name, airlinePlan, "No Rewards", miles);
         }
-         mDbAdapter.createCustomer(name, airlinePlan, "No Rewards", miles);
+       int i = 0;
     }
 
     private void initializeDatabase() {

@@ -129,14 +129,26 @@ public class RedeemRewardsActivity extends AppCompatActivity {
 
                             case BRONZE:   // Bronze Status
                                 miles = customer.getMiles() - BRONZE_FLIGHT_DEDUCTION;
+                                customer.setMiles(miles);
+                                mDbAdapter.updateCustomerByName(customer);
+                                // update current status
+                                reassignStatus();
                                 break;
 
                             case SILVER:   // Silver Status
                                 miles = customer.getMiles()  - SILVER_UPGRADE_DEDUCTION;
+                                customer.setMiles(miles);
+                                mDbAdapter.updateCustomerByName(customer);
+                                // update current status
+                                reassignStatus();
                                 break;
 
                             case GOLD:   // Gold Status
                                 miles = customer.getMiles()  - GOLD_UPGRADE_DEDUCTION;
+                                customer.setMiles(miles);
+                                mDbAdapter.updateCustomerByName(customer);
+                                // update current status
+                                reassignStatus();
                                 break;
 
                             case NO:   // no rewards
@@ -333,22 +345,40 @@ public class RedeemRewardsActivity extends AppCompatActivity {
         switch (Reward_Status.valueOf(status.substring(0, idx).toUpperCase())) {
 
             case BRONZE:   // Bronze Status
-                if (miles > 0 && miles < 1000)
+                if (miles > 0 && miles < 1000) {
                     miles = customer.getMiles() - BRONZE_FLIGHT_DEDUCTION;
+                    customer.setMiles(miles);
+                    mDbAdapter.updateCustomerByName(customer);
+                    // update current status
+                    reassignStatus();
+                }
+
                 else
                     miles  = 0;
                 break;
 
             case SILVER:    // Silver Status
-                if (miles >= 1000 && miles < 2000)
+                if (miles >= 1000 && miles < 2000) {
                     miles = customer.getMiles() - SILVER_FLIGHT_DEDUCTION;
+                    customer.setMiles(miles);
+                    mDbAdapter.updateCustomerByName(customer);
+                    // update current status
+                    reassignStatus();
+                }
+
                 else
                     miles  = 0;
                 break;
 
             case GOLD:   // Gold Status
-                if (miles >= 2000 && miles < 3000)
+                if (miles >= 2000 && miles < 3000) {
                     miles = customer.getMiles() - GOLD_FLIGHT_DEDUCTION;
+                    customer.setMiles(miles);
+                    mDbAdapter.updateCustomerByName(customer);
+                    // update current status
+                    reassignStatus();
+                }
+
                 else
                     miles  = 0;
                 break;
@@ -366,21 +396,15 @@ public class RedeemRewardsActivity extends AppCompatActivity {
 
         // display and update remaining miles
         if (miles > 0) {
-
-            // update current status
-            reassignStatus();
-            customer.setStatus(status);
-
-            // update the updated miles in the database
-            customer.setMiles(miles);
-            mDbAdapter.updateCustomerByName(customer);
-            txtRemainingMiles.setText(Integer.toString(miles));
-            txtUpdatedStatus.setText(status);
+            txtRemainingMiles.setText(Integer.toString(customer.getMiles()));
+            txtUpdatedStatus.setText(customer.getStatus());
         } else if (miles == 0) {
             txtRemainingMiles.setText(Integer.toString(customer.getMiles()));
+            txtUpdatedStatus.setText(customer.getStatus());
             txtMsg.setText("Miles entered out of range for Status.");
         } else if (miles < 0) {
             txtRemainingMiles.setText(Integer.toString(customer.getMiles()));
+            txtUpdatedStatus.setText(customer.getStatus());
             txtMsg.setText("Upgrade Unsuccessful - not enough miles in the bank.");
         }
     }
@@ -388,13 +412,13 @@ public class RedeemRewardsActivity extends AppCompatActivity {
     public void reassignStatus() {
 
         // determine Rewards
-        if (miles >= 25000 && miles < 50000) {  // Bronze Status
+        if (customer.getMiles() >= 25000 && customer.getMiles() < 50000) {  // Bronze Status
             status = "Bronze Status";
         }
-        else if (miles >= 50000 && miles < 75000) {  // Silver Status
+        else if (customer.getMiles() >= 50000 && customer.getMiles() < 75000) {  // Silver Status
             status = "Silver Status";
         }
-        else if (miles >= 75000) {  // Gold Status
+        else if (customer.getMiles() >= 75000) {  // Gold Status
             status = "Gold Status";
         }
         else {
